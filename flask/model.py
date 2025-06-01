@@ -42,8 +42,8 @@ dataset = pd.read_csv('diabetes.csv')
 # In[13]:
 
 
-dataset_X = dataset.iloc[:,[1, 4, 5, 7]].values
-dataset_Y = dataset.iloc[:,8].values
+dataset_X = dataset.iloc[:, :-1].values  # All columns except the last one (Outcome)
+dataset_Y = dataset.iloc[:, -1].values   # Last column (Outcome)
 
 
 # In[14]:
@@ -89,7 +89,7 @@ Y
 
 
 from sklearn.model_selection import train_test_split
-X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size = 0.20, random_state = 42, stratify = dataset['Outcome'] )
+X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size = 0.20, random_state = 42, stratify = dataset['Outcome'])
 
 
 # # Step 4: Data Modelling
@@ -105,7 +105,7 @@ svc.fit(X_train, Y_train)
 # In[26]:
 
 
-svc.score(X_test, Y_test)
+print(f"Model Accuracy: {svc.score(X_test, Y_test):.2f}")
 
 
 # In[27]:

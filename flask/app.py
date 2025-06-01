@@ -8,12 +8,12 @@ model = pickle.load(open('model.pkl', 'rb'))
 
 dataset = pd.read_csv('diabetes.csv')
 
-dataset_X = dataset.iloc[:,[1, 2, 5, 7]].values
+# Use all features
+dataset_X = dataset.iloc[:, :-1].values  # All columns except the last one (Outcome)
 
 from sklearn.preprocessing import MinMaxScaler
 sc = MinMaxScaler(feature_range = (0,1))
 dataset_scaled = sc.fit_transform(dataset_X)
-
 
 @app.route('/')
 def home():
@@ -24,9 +24,13 @@ def predict():
     '''
     For rendering results on HTML GUI
     '''
-    float_features = [float(x) for x in request.form.values()]
+    # Get all 8 features in the correct order
+    features = ['Pregnancies', 'Glucose', 'BloodPressure', 'SkinThickness', 
+                'Insulin', 'BMI', 'DiabetesPedigreeFunction', 'Age']
+    
+    float_features = [float(request.form[feature]) for feature in features]
     final_features = [np.array(float_features)]
-    prediction = model.predict( sc.transform(final_features) )
+    prediction = model.predict(sc.transform(final_features))
 
     if prediction == 1:
         pred = "You have Diabetes, please consult a Doctor."
